@@ -59,9 +59,13 @@ commands:
     description: TP to spawn during events
     usage: /<command>
     aliases: [spawn]
+    permission: blazinutils.default
+    permission-message: You are not allowed to run this command.
   tpreturn:
     description: TP to return from events
     usage: /<command>
+    permission: blazinutils.default
+    permission-message: You are not allowed to run this command.
   jail:
     description: Jail a player, optionally with a specified time
     usage: /<command>
@@ -97,6 +101,11 @@ commands:
     usage: /<command>
     permission: blazinutils.op
     permission-message: You are not allowed to run this command.
+  togglePlayerCourt:
+    description: Toggle whether a player is in court.
+    usage: /<command>
+    permission: blazinutils.op
+    permission-message: You are not allowed to run this command.
     #spawneventtoggle:
     #description: Toggle spawn events
     #usage: /<command>
@@ -109,9 +118,11 @@ commands:
     #description: Create a team
     #usage: /<command>
 permissions:
+  blazinutils.default:
+    description: Permission for normal commands
+    default: true
   blazinutils.op:
     description: Permission for op commands
     default: op
 depend:
   - LuckPerms
-  - EssentialsX

@@ -17,36 +17,34 @@ import java.util.List;
 public class ChatAnnouncementCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-
-            if(args.length > 0) {
-                StringBuilder sb = new StringBuilder();
-                for(int i = 0; i < args.length; i++) {
-                    if(i == 0) {
-                        sb.append(args[i]);
-                    }else {
-                        sb.append(" ").append(args[i]);
-                    }
+        if(args.length > 0) {
+            StringBuilder sb = new StringBuilder();
+            for(int i = 0; i < args.length; i++) {
+                if(i == 0) {
+                    sb.append(args[i]);
+                }else {
+                    sb.append(" ").append(args[i]);
                 }
-                String message = sb.toString();
-                List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-                for(int i2 =0; i2 < players.size(); i2++) {
-                    Player iPlayer = players.get(i2);
-                    iPlayer.sendMessage(Component.text("[Announcement!] ")
-                            .color(TextColor.color(13185315))
-                            .decorate(TextDecoration.BOLD)
-                            .append(Component.text(message)
-                                    .color(TextColor.color(13657113))));
-                    iPlayer.playSound(iPlayer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 10.0F, 0.8F);
-                }
-            }else {
-                final Component component = Component.text("Please use the following command syntax: /announcement <message>")
-                        .color(TextColor.color(13185315));
-                player.sendMessage(component);
+            }
+            String message = sb.toString();
+            List<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+            for(int i2 =0; i2 < players.size(); i2++) {
+                Player iPlayer = players.get(i2);
+                iPlayer.sendMessage(Component.text("[Announcement!] ")
+                        .color(TextColor.color(13185315))
+                        .decorate(TextDecoration.BOLD)
+                        .append(Component.text(message)
+                                .color(TextColor.color(13657113))));
+                iPlayer.playSound(iPlayer.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 10.0F, 0.8F);
             }
         }else {
-            BlazinUtils.getInstance().getLogger().warning("This command must be run by a player.");
+            if (sender instanceof Player) {
+                final Component component = Component.text("Please use the following command syntax: /announcement <message>")
+                        .color(TextColor.color(13185315));
+                sender.sendMessage(component);
+            }else {
+                Bukkit.getLogger().warning("Please use the following command syntax: /announcement <message>");
+            }
         }
 
         return true;

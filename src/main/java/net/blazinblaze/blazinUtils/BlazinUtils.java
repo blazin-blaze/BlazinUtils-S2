@@ -13,6 +13,7 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,10 +29,10 @@ import java.util.*;
 /*/TODO:
     - JAIL SYSTEM
     - Add timed jailed players (done)
-    - Teleport to court command
+    - Teleport to court command (done)
     - TPA ACCESS
-    - Add LuckPerms permissions code to TPA commands
-    - Add TPA playtime exception so that playtime code doesn't override /removeTPAAccess
+    - Add LuckPerms permissions code to TPA commands (done)
+    - Add TPA playtime exception so that playtime code doesn't override /removeTPAAccess (done)
     - RESTRAINING ORDER COMMAND
     - MISC
     - Make certain commands usable from the console
@@ -57,6 +58,9 @@ public final class BlazinUtils extends JavaPlugin {
     public static LuckPerms luckPermsAPI;
     public static Map<String, Object> playTime;
     public static ArrayList<String> shouldAbleTPA;
+    public static ArrayList<String> exemptedTPAPLayers;
+    public static ArrayList<UUID> shouldBeAtCourt = new ArrayList<>();
+    public static Location courtLocation = null;
 
     private static final String webhookURL = "https://discord.com/api/webhooks/1378786444818120875/8kfXTdWIY6CO5lUqK6_E2TTAbi3c7G-Bug353pSK0SWkKBqMSzheru5tLDPwSOqxkfc_";
 
@@ -67,6 +71,9 @@ public final class BlazinUtils extends JavaPlugin {
         purgeActive = false;
         spawnEventActive = false;
         isTimedPurgeActive = false;
+
+        World world = Bukkit.getWorld("world");
+        courtLocation = new Location(world, -64533, 68, -33947);
 
         getLogger().info("BlazinUtils is enabled!");
         getCommand("discord").setExecutor(new DiscordCommand());
@@ -93,7 +100,11 @@ public final class BlazinUtils extends JavaPlugin {
         getCommand("removeCell").setExecutor(new RemoveCellCommand());
         getCommand("listCells").setExecutor(new ListCellsCommand());
         getCommand("removeTPAAccess").setExecutor(new RemoveTPACommand());
+        getCommand("removeTPAAccess").setTabCompleter(new PlayerTabCompleter());
         getCommand("addTPAAccess").setExecutor(new AddTPACommand());
+        getCommand("addTPAAccess").setTabCompleter(new PlayerTabCompleter());
+        getCommand("togglePlayerCourt").setExecutor(new ToggleCourtCommand());
+        getCommand("togglePlayerCourt").setTabCompleter(new PlayerTabCompleter());
         //getCommand("spawneventtoggle").setExecutor(new SpawnEventToggleCommand());
 
         //DiscordWebhook webhook = new DiscordWebhook(webhookURL);
@@ -174,6 +185,11 @@ public final class BlazinUtils extends JavaPlugin {
             shouldAbleTPA = list;
         }else {
             shouldAbleTPA = new ArrayList<>();
+        }
+        if(cfg2.get("players.tpaExempt") instanceof ArrayList list) {
+            exemptedTPAPLayers = list;
+        }else {
+            exemptedTPAPLayers = new ArrayList<>();
         }
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
@@ -261,6 +277,7 @@ public final class BlazinUtils extends JavaPlugin {
         FileConfiguration cfg2 = YamlConfiguration.loadConfiguration(f2);
         cfg2.set("players.playtime", Objects.requireNonNull(playTime));
         cfg2.set("players.tpaEnabled", Objects.requireNonNull(shouldAbleTPA));
+        cfg2.set("players.tpaExempt", Objects.requireNonNull(exemptedTPAPLayers));
         try{cfg2.save(f2);} catch (IOException eo){eo.printStackTrace();}
 
         //DiscordWebhook webhook = new DiscordWebhook(webhookURL);
