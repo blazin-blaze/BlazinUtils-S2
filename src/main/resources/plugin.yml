@@ -69,7 +69,7 @@ commands:
   jail:
     description: Jail a player, optionally with a specified time
     usage: /<command>
-    permission: blazinutils.op
+    permission: blazinutils.mod
     permission-message: You are not allowed to run this command.
   addCell:
     description: Add a normal cell/holding cell to the list of possible jail cell areas
@@ -89,12 +89,12 @@ commands:
   listCells:
     description: Lists the current normal cell/holding cell locations
     usage: /<command>
-    permission: blazinutils.op
+    permission: blazinutils.mod
     permission-message: You are not allowed to run this command.
   addTPAAccess:
     description: Gives a player TPA access.
     usage: /<command>
-    permission: blazinutils.op
+    permission: blazinutils.mod
     permission-message: You are not allowed to run this command.
   removeTPAAccess:
     description: Removes a player's TPA access.
@@ -104,7 +104,7 @@ commands:
   togglePlayerCourt:
     description: Toggle whether a player is in court.
     usage: /<command>
-    permission: blazinutils.op
+    permission: blazinutils.mod
     permission-message: You are not allowed to run this command.
     #spawneventtoggle:
     #description: Toggle spawn events
@@ -121,6 +121,9 @@ permissions:
   blazinutils.default:
     description: Permission for normal commands
     default: true
+  blazinutils.mod:
+      description: Permission for mod commands
+      default: false
   blazinutils.op:
     description: Permission for op commands
     default: op
